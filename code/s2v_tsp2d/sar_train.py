@@ -25,7 +25,7 @@ def find_model_file(opt):
         n1 = min_n - 100
         n2 = max_n - 100
 
-    log_file = '%s/log-%d-%d.txt' % (opt['save_dir'], n1, n2)
+    log_file = '%s/log-%d-%d.txt' % (opt['load_dir'], n1, n2)
     if not os.path.isfile(log_file):
         return None
     best_r = 1000000
@@ -43,7 +43,7 @@ def find_model_file(opt):
         return None
     return '%s/nrange_%d_%d_iter_%d.model' % (opt['load_dir'], n1, n2, best_it)
 
-def PrepareGraphs(isValid):
+def PrepareGraphs(api,isValid):
     if isValid:
         n_graphs = 100
         prefix = 'validation_tsp2d'
@@ -53,6 +53,7 @@ def PrepareGraphs(isValid):
     folder = '%s/%s/tsp_min-n=%s_max-n=%s_num-graph=%d_type=%s' % (opt['data_root'], prefix, opt['min_n'], opt['max_n'], n_graphs, opt['g_type'])
 
     with open('%s/paths.txt' % folder, 'r') as f:
+        graphs_with_optimal_tour_lens = []
         for line in tqdm(f):
             fname = '%s/%s' % (folder, line.split('/')[-1].strip())
             coors = {}
@@ -72,27 +73,36 @@ def PrepareGraphs(isValid):
             g = nx.Graph()
             g.add_nodes_from(range(n_nodes))
             nx.set_node_attributes(g, coors, 'pos')
-            tsp_solver_api.InsertGraph(g,is_test=true)
+            api.InsertGraph(g,is_test=True)
             optimal_tour_len,_ = tsp_solver_api.GetSol(0,nx.number_of_nodes(g))
-
-            sar_api.InsertGraph(g, is_test=isValid,tour_length=optimal_tour_len)
+            graphs_with_optimal_tour_lens.append((g,optimal_tour_len))
+        
+        return graphs_with_optimal_tour_lens
 
 if __name__ == '__main__':
-    sar_api = Tsp2dLib(sys.argv)
     tsp_solver_api = Tsp2dLib(sys.argv)
     opt = {}
     for i in range(1, len(sys.argv), 2):
         opt[sys.argv[i][1:]] = sys.argv[i + 1]
 
     model_file = find_model_file(opt)
+    
     if model_file is not None:
         print 'loading', model_file
         sys.stdout.flush()
         tsp_solver_api.LoadModel(model_file)
+    print "TSP solver is loaded"
+    prepared_validation_data = PrepareGraphs(tsp_solver_api,isValid=True)
+    prepared_train_data = PrepareGraphs(tsp_solver_api,isValid=False)
 
-    PrepareGraphs(isValid=True)
-    PrepareGraphs(isValid=False)
-
+    sar_api = tsp_solver_api
+    sar_api.ResetModel()
+    for vd in prepared_validation_data:
+        sar_api.InsertGraph(vd[0], is_test=True,tour_length=vd[1])
+    
+    for td in prepared_train_data:
+        sar_api.InsertGraph(td[0], is_test=False,tour_length=td[1])
+    
     # startup    
     for i in range(10):
         sar_api.lib.PlayGame(100, ctypes.c_double(1.0))
