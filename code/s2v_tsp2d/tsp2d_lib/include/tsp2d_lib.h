@@ -9,6 +9,8 @@ extern "C" int LoadModel(const char* filename);
 
 extern "C" int SaveModel(const char* filename);
 
+extern "C" int ResetModel();
+
 extern "C" int UpdateSnapshot();
 
 extern "C" int ClearTrainGraphs();

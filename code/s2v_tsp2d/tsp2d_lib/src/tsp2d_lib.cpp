@@ -37,10 +37,7 @@ int ResetModel()
 {
     ASSERT(net, "please init the lib before use");
     // Clear loaded params
-    net->model.params.clear();
-    net->model.nondiff_params.clear();
-    // Rebuild with default params.
-    net->BuildNet();
+    net->model.Reset();
     return 0;
 }
 
