@@ -28,10 +28,10 @@ class GSet
 public:
     GSet();
 
-    void InsertGraph(int gid, std::shared_ptr<Graph> graph);
-    std::shared_ptr<Graph> Sample();
-    std::shared_ptr<Graph> Get(int gid);
-    std::map<int, std::shared_ptr<Graph> > graph_pool;
+    void InsertGraph(int gid, std::shared_ptr<Graph> graph, double tour_length);
+    std::pair<std::shared_ptr<Graph>,double> Sample();
+    std::pair<std::shared_ptr<Graph>,double> Get(int gid);
+    std::map<int, std::pair<std::shared_ptr<Graph>,double > > graph_pool;
 };
 
 extern GSet GSetTrain;

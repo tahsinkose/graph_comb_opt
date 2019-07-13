@@ -11,7 +11,7 @@ public:
 
     SAREnv(double _norm);
 
-    virtual void s0(std::shared_ptr<Graph>  _g) override;
+    virtual void s0(std::pair<std::shared_ptr<Graph>,double>  _g) override;
 
     virtual double step(int a) override;
 
@@ -26,6 +26,7 @@ public:
 private:
 	double battery;
 	double battery_depletion; // for each meter.
+    double graph_tour_length;
 };
 
 #endif

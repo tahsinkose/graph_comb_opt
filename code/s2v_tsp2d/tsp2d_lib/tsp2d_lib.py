@@ -37,7 +37,7 @@ class Tsp2dLib(object):
         self.ngraph_train = 0
         self.lib.ClearTrainGraphs()
 
-    def InsertGraph(self, g, is_test):
+    def InsertGraph(self, g, is_test,tour_length=-1.0):
         n_nodes, coor_x, coor_y = self.__CtypeNetworkX(g)
         if is_test:
             t = self.ngraph_test
@@ -45,8 +45,7 @@ class Tsp2dLib(object):
         else:
             t = self.ngraph_train
             self.ngraph_train += 1
-
-        self.lib.InsertGraph(is_test, t, n_nodes, coor_x, coor_y)
+        self.lib.InsertGraph(is_test, t, n_nodes, coor_x, coor_y, tour_length)
     
     def LoadModel(self, path_to_model):
         p = ctypes.cast(path_to_model, ctypes.c_char_p)

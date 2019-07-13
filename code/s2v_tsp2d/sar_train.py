@@ -41,7 +41,7 @@ def find_model_file(opt):
                     best_it = it
     if best_it < 0:
         return None
-    return '%s/nrange_%d_%d_iter_%d.model' % (opt['save_dir'], n1, n2, best_it)
+    return '%s/nrange_%d_%d_iter_%d.model' % (opt['load_dir'], n1, n2, best_it)
 
 def PrepareGraphs(isValid):
     if isValid:
@@ -72,7 +72,10 @@ def PrepareGraphs(isValid):
             g = nx.Graph()
             g.add_nodes_from(range(n_nodes))
             nx.set_node_attributes(g, coors, 'pos')
-            sar_api.InsertGraph(g, is_test=isValid)
+            tsp_solver_api.InsertGraph(g,is_test=true)
+            optimal_tour_len,_ = tsp_solver_api.GetSol(0,nx.number_of_nodes(g))
+
+            sar_api.InsertGraph(g, is_test=isValid,tour_length=optimal_tour_len)
 
 if __name__ == '__main__':
     sar_api = Tsp2dLib(sys.argv)
@@ -99,25 +102,25 @@ if __name__ == '__main__':
     eps_end = 1.0
 
     eps_step = 10000.0
-    api.lib.SetSign(1)
+    sar_api.lib.SetSign(1)
 
     lr = float(opt['learning_rate'])
     for iter in range(int(opt['max_iter'])):
         eps = eps_end + max(0., (eps_start - eps_end) * (eps_step - iter) / eps_step)
         if iter % 10 == 0:
-            api.lib.PlayGame(10, ctypes.c_double(eps))
+            sar_api.lib.PlayGame(10, ctypes.c_double(eps))
 
         if iter % 100 == 0:
             frac = 0.0
             for idx in range(n_valid):
-                frac += api.lib.Test(idx)
+                frac += sar_api.lib.Test(idx)
             print 'iter', iter, 'lr', lr, 'eps', eps, 'average tour length: ', frac / n_valid
             sys.stdout.flush()
             model_path = '%s/nrange_%d_%d_iter_%d.model' % (opt['save_dir'], int(opt['min_n']), int(opt['max_n']), iter)
-            api.SaveModel(model_path)
+            sar_api.SaveModel(model_path)
 
         if iter % 1000 == 0:
-            api.TakeSnapshot()
+            sar_api.TakeSnapshot()
             lr = lr * 0.95
 
-        api.lib.Fit(ctypes.c_double(lr))
+        sar_api.lib.Fit(ctypes.c_double(lr))

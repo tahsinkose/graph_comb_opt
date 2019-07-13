@@ -55,8 +55,9 @@ int Init(const int argc, const char** argv)
     NStepReplayMem::Init(cfg::mem_size);
     
     Simulator::Init(cfg::num_env);
-    for (int i = 0; i < cfg::num_env; ++i)
+    for (int i = 0; i < cfg::num_env; ++i){
         Simulator::env_list[i] = new SAREnv(cfg::max_n);
+    }
     test_env = new SAREnv(cfg::max_n);
 
     list_pred.resize(cfg::batch_size);
@@ -71,13 +72,13 @@ int UpdateSnapshot()
     return 0;
 }
 
-int InsertGraph(bool isTest, const int g_id, const int num_nodes, const double* coor_x, const double* coor_y)
+int InsertGraph(bool isTest, const int g_id, const int num_nodes, const double* coor_x, const double* coor_y, double tour_length=-1)
 {
     auto g = std::make_shared<Graph>(num_nodes, coor_x, coor_y);
     if (isTest)
-        GSetTest.InsertGraph(g_id, g);
+        GSetTest.InsertGraph(g_id, g, tour_length);
     else
-        GSetTrain.InsertGraph(g_id, g);
+        GSetTrain.InsertGraph(g_id, g, tour_length);
     return 0;
 }
 

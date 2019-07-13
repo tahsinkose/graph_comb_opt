@@ -12,7 +12,7 @@ public:
 
     IEnv(double _norm) : norm(_norm), graph(nullptr) {}
 
-    virtual void s0(std::shared_ptr<Graph> _g) = 0;
+    virtual void s0(std::pair<std::shared_ptr<Graph>,double> _g) = 0;
 
     virtual double step(int a) = 0;
 

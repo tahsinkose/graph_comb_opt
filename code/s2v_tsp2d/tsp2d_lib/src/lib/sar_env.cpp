@@ -11,9 +11,10 @@ SAREnv::SAREnv(double _norm) : IEnv(_norm)
 
 }
 
-void SAREnv::s0(std::shared_ptr<Graph> _g)
+void SAREnv::s0(std::pair<std::shared_ptr<Graph>,double> _g)
 {
-    graph = _g;
+    graph = _g.first;
+    graph_tour_length = _g.second;
     partial_set.clear();
     action_list.clear();
     action_list.push_back(0);
@@ -25,6 +26,9 @@ void SAREnv::s0(std::shared_ptr<Graph> _g)
     sum_rewards.clear();
 
     battery = 100;
+    // Bottleneck is the optimal tour length
+    battery_depletion = battery / graph_tour_length;
+    battery_depletion *= 0.95;
 }
 
 double SAREnv::step(int a)
