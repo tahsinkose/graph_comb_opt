@@ -6,7 +6,7 @@
 #include "old_qnet.h"
 #include "nstep_replay_mem.h"
 #include "simulator.h"
-#include "tsp2d_env.h"
+#include "sar_env.h"
 #include <random>
 #include <algorithm>
 #include <cstdlib>
@@ -34,7 +34,7 @@ int SaveModel(const char* filename)
 }
 
 std::vector< std::vector<double>* > list_pred;
-Tsp2dEnv* test_env;
+SAREnv* test_env;
 int Init(const int argc, const char** argv)
 {
     signal(SIGINT, intHandler);
@@ -56,8 +56,8 @@ int Init(const int argc, const char** argv)
     
     Simulator::Init(cfg::num_env);
     for (int i = 0; i < cfg::num_env; ++i)
-        Simulator::env_list[i] = new Tsp2dEnv(cfg::max_n);
-    test_env = new Tsp2dEnv(cfg::max_n);
+        Simulator::env_list[i] = new SAREnv(cfg::max_n);
+    test_env = new SAREnv(cfg::max_n);
 
     list_pred.resize(cfg::batch_size);
     for (int i = 0; i < cfg::batch_size; ++i)
