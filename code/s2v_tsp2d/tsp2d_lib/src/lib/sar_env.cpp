@@ -13,59 +13,61 @@ SAREnv::SAREnv(double _norm) : IEnv(_norm)
 
 void SAREnv::s0(std::pair<std::shared_ptr<Graph>,double> _g)
 {
-    graph = _g.first;
-    graph_tour_length = _g.second;
-    partial_set.clear();
-    action_list.clear();
-    action_list.push_back(0);
-    partial_set.insert(0);
+    this->graph = _g.first;
+    this->graph_tour_length = _g.second;
+    this->partial_set.clear();
+    this->action_list.clear();
+    this->action_list.push_back(0);
+    this->partial_set.insert(0);
 
-    state_seq.clear();
-    act_seq.clear();
-    reward_seq.clear();
-    sum_rewards.clear();
+    this->state_seq.clear();
+    this->act_seq.clear();
+    this->reward_seq.clear();
+    this->sum_rewards.clear();
 
-    battery = 100;
+    this->battery = 100;
     // Bottleneck is the optimal tour length
-    battery_depletion = battery / graph_tour_length;
-    battery_depletion *= 0.95;
+    if(this->graph_tour_length < 0) this->battery_depletion = 0.0;
+    else this->battery_depletion = this->battery / this->graph_tour_length;
+    std::cout<<"Graph tour length is: "<<this->graph_tour_length<<std::endl;
+    this->battery_depletion *= 0.95;
 }
 
 double SAREnv::step(int a)
 {
-    assert(graph);
-    assert(partial_set.count(a) == 0);
-    assert(a > 0 && a < graph->num_nodes);
+    assert(this->graph);
+    assert(this->partial_set.count(a) == 0);
+    assert(a > 0 && a < this->graph->num_nodes);
 
-    state_seq.push_back(action_list);
-    act_seq.push_back(a);
+    this->state_seq.push_back(this->action_list);
+    this->act_seq.push_back(a);
 
     double r_t = add_node(a);
     
-    reward_seq.push_back(r_t);
-    sum_rewards.push_back(r_t);  
+    this->reward_seq.push_back(r_t);
+    this->sum_rewards.push_back(r_t);  
 
     return r_t;
 }
 
 int SAREnv::randomAction()
 {
-    assert(graph);
-    avail_list.clear();
+    assert(this->graph);
+    this->avail_list.clear();
 
-    for (int i = 0; i < graph->num_nodes; ++i)
-        if (partial_set.count(i) == 0)
-            avail_list.push_back(i);
+    for (int i = 0; i < this->graph->num_nodes; ++i)
+        if (this->partial_set.count(i) == 0)
+            this->avail_list.push_back(i);
     
-    assert(avail_list.size());
-    int idx = rand() % avail_list.size();
-    return avail_list[idx];
+    assert(this->avail_list.size());
+    int idx = rand() % this->avail_list.size();
+    return this->avail_list[idx];
 }
 
 bool SAREnv::isTerminal()
 {
-    assert(graph);
-    return ((int)action_list.size() == graph->num_nodes);
+    assert(this->graph);
+    return ((int)this->action_list.size() == this->graph->num_nodes);
 }
 
 /*
@@ -77,16 +79,16 @@ double SAREnv::add_node(int new_node)
     double cur_dist = 10000000.0;
     double punishment = 10000000.0;
     int pos = -1;
-    for (size_t i = 0; i < action_list.size(); ++i)
+    for (size_t i = 0; i < this->action_list.size(); ++i)
     {
         int adj;
-        if (i + 1 == action_list.size())
-            adj = action_list[0];
+        if (i + 1 == this->action_list.size())
+            adj = this->action_list[0];
         else
-            adj = action_list[i + 1];
-        double cost = graph->dist[new_node][action_list[i]]
-                     + graph->dist[new_node][adj]
-                     - graph->dist[action_list[i]][adj];
+            adj = this->action_list[i + 1];
+        double cost = this->graph->dist[new_node][this->action_list[i]]
+                     + this->graph->dist[new_node][adj]
+                     - this->graph->dist[this->action_list[i]][adj];
         if (cost < cur_dist)
         {
             cur_dist = cost;
@@ -95,12 +97,12 @@ double SAREnv::add_node(int new_node)
     }
     assert(pos >= 0);
     assert(cur_dist >= -1e-8);
-    action_list.insert(action_list.begin() + pos + 1, new_node);
-    partial_set.insert(new_node);
+    this->action_list.insert(this->action_list.begin() + pos + 1, new_node);
+    this->partial_set.insert(new_node);
 
-    battery -= cur_dist * battery_depletion;
-    std::cout<<"Current distance: "<<cur_dist<<", remaining battery: "<<battery<<std::endl;
-    if(battery > 0)
+    this->battery -= cur_dist * this->battery_depletion;
+    std::cout<<"Current distance: "<<cur_dist<<", remaining battery: "<<this->battery<<std::endl;
+    if(this->battery > 0)
         return sign * cur_dist / norm;
     else
         return sign * punishment; //Punishment
