@@ -33,6 +33,17 @@ int SaveModel(const char* filename)
     return 0;
 }
 
+int ResetModel()
+{
+    ASSERT(net, "please init the lib before use");
+    // Clear loaded params
+    net->model.params.clear();
+    net->model.nondiff_params.clear();
+    // Rebuild with default params.
+    net->BuildNet();
+    return 0;
+}
+
 std::vector< std::vector<double>* > list_pred;
 SAREnv* test_env;
 int Init(const int argc, const char** argv)
@@ -72,7 +83,7 @@ int UpdateSnapshot()
     return 0;
 }
 
-int InsertGraph(bool isTest, const int g_id, const int num_nodes, const double* coor_x, const double* coor_y, double tour_length=-1)
+int InsertGraph(bool isTest, const int g_id, const int num_nodes, const double* coor_x, const double* coor_y, const double tour_length)
 {
     auto g = std::make_shared<Graph>(num_nodes, coor_x, coor_y);
     if (isTest)

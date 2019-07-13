@@ -45,7 +45,9 @@ class Tsp2dLib(object):
         else:
             t = self.ngraph_train
             self.ngraph_train += 1
-        self.lib.InsertGraph(is_test, t, n_nodes, coor_x, coor_y, tour_length)
+        c_tour_length = ctypes.c_double(tour_length)
+
+        self.lib.InsertGraph(is_test, t, n_nodes, coor_x, coor_y, c_tour_length)
     
     def LoadModel(self, path_to_model):
         p = ctypes.cast(path_to_model, ctypes.c_char_p)
@@ -54,6 +56,9 @@ class Tsp2dLib(object):
     def SaveModel(self, path_to_model):
         p = ctypes.cast(path_to_model, ctypes.c_char_p)
         self.lib.SaveModel(p)
+
+    def ResetModel(self):
+        self.lib.ResetModel()
 
     def GetSol(self, gid, maxn):
         sol = (ctypes.c_int * (maxn + 10))()
