@@ -95,6 +95,7 @@ double SAREnv::add_node(int new_node)
     partial_set.insert(new_node);
 
     battery -= cur_dist * battery_depletion;
+    std::cout<<"Current distance: "<<cur_dist<<", remaining battery: "<<battery<<std::endl;
     if(battery > 0)
         return sign * cur_dist / norm;
     else

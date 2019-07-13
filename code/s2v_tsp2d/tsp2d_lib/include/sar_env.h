@@ -25,7 +25,7 @@ public:
     std::vector<int> avail_list;
 private:
 	double battery;
-	const double battery_depletion = 0.3; // for each meter.
+	double battery_depletion; // for each meter.
 };
 
 #endif
