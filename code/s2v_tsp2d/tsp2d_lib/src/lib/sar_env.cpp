@@ -29,8 +29,8 @@ void SAREnv::s0(std::pair<std::shared_ptr<Graph>,double> _g)
     // Bottleneck is the optimal tour length
     if(this->graph_tour_length < 0) this->battery_depletion = 0.0;
     else this->battery_depletion = this->battery / this->graph_tour_length;
-    std::cout<<"Graph tour length is: "<<this->graph_tour_length<<std::endl;
     this->battery_depletion *= 0.95;
+    std::cout<<this->battery_depletion<<std::endl;
 }
 
 double SAREnv::step(int a)
@@ -101,7 +101,6 @@ double SAREnv::add_node(int new_node)
     this->partial_set.insert(new_node);
 
     this->battery -= cur_dist * this->battery_depletion;
-    std::cout<<"Current distance: "<<cur_dist<<", remaining battery: "<<this->battery<<std::endl;
     if(this->battery > 0)
         return sign * cur_dist / norm;
     else
