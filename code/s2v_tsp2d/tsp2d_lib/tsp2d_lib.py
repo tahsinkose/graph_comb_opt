@@ -46,7 +46,7 @@ class Tsp2dLib(object):
             t = self.ngraph_train
             self.ngraph_train += 1
         c_tour_length = ctypes.c_double(tour_length)
-
+        
         self.lib.InsertGraph(is_test, t, n_nodes, coor_x, coor_y, c_tour_length)
     
     def LoadModel(self, path_to_model):
