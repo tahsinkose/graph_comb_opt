@@ -15,6 +15,8 @@ extern "C" int UpdateSnapshot();
 
 extern "C" int ClearTrainGraphs();
 
+extern "C" void ClearTestGraphs();
+
 extern "C" int PlayGame(const int n_traj, const double eps);
 
 extern "C" double Fit(const double lr);
