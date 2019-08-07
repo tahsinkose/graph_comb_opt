@@ -20,7 +20,7 @@ public:
     virtual bool isTerminal() override;
 
     double add_node(int new_node);
-
+    double getBatteryDepletion();
     std::set<int> partial_set;
     std::vector<int> avail_list;
 private:

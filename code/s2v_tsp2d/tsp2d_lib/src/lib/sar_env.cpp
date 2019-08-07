@@ -30,9 +30,11 @@ void SAREnv::s0(std::pair<std::shared_ptr<Graph>,double> _g)
     if(this->graph_tour_length < 0) this->battery_depletion = 0.0;
     else this->battery_depletion = this->battery / this->graph_tour_length;
     this->battery_depletion *= 0.95;
-    std::cout<<this->battery_depletion<<std::endl;
 }
-
+double SAREnv::getBatteryDepletion()
+{
+    return this->battery_depletion;
+}
 double SAREnv::step(int a)
 {
     assert(this->graph);
