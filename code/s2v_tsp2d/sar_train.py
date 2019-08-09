@@ -31,8 +31,7 @@ if __name__ == '__main__':
         sar_api.InsertGraph(vd[0], is_test=True,tour_length=vd[1])
 
     for td in prepared_train_data:
-        sar_api.InsertGraph(td[0], is_test=False,tour_length=td[1])
-        #print "Tour length of ",td[0], ": ",td[1]
+        sar_api.InsertGraph(td[0], is_test=False,tour_length=td[1])        
     # startup
     for i in range(10):
         sar_api.lib.PlayGame(100, ctypes.c_double(1.0))
@@ -56,7 +55,7 @@ if __name__ == '__main__':
             for idx in range(n_valid):
                 path_length = sar_api.lib.Test(idx)
                 frac += path_length
-                print "IDX: ",idx, " path length: ",path_length
+                print "IDX: ",idx, " path length: ",path_length," optimal tour length: ", prepared_validation_data[idx][1]
             print 'iter', iter, 'lr', lr, 'eps', eps, 'average tour length: ', frac / n_valid
             sys.stdout.flush()
             model_path = '%s/nrange_%d_%d_iter_%d.model' % (opt['save_dir'], int(opt['min_n']), int(opt['max_n']), iter)

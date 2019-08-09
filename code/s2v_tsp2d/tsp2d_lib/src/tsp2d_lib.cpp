@@ -220,9 +220,9 @@ double Test(const int gid)
 {
     std::vector< std::shared_ptr<Graph> > g_list(1);
     std::vector< std::vector<int>* > states(1);
-    
     test_env->s0(GSetTest.Get(gid));
-    std::cout<<"Graph "<<gid<<" battery depletion: "<<test_env->getBatteryDepletion();
+    std::cout<<"Graph "<<gid<<" battery depletion: "<< test_env->getBatteryDepletion()<<std::endl;
+
     states[0] = &(test_env->action_list);
     g_list[0] = test_env->graph;
 
@@ -242,7 +242,7 @@ double GetSol(const int gid, int* sol)
 {
     std::vector< std::shared_ptr<Graph> > g_list(1);
     std::vector< std::vector<int>* > states(1);
-
+    
     test_env->s0(GSetTest.Get(gid));
     states[0] = &(test_env->action_list);
     g_list[0] = test_env->graph;

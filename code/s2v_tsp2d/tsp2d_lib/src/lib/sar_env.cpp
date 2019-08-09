@@ -29,7 +29,7 @@ void SAREnv::s0(std::pair<std::shared_ptr<Graph>,double> _g)
     // Bottleneck is the optimal tour length
     if(this->graph_tour_length < 0) this->battery_depletion = 0.0;
     else this->battery_depletion = this->battery / this->graph_tour_length;
-    this->battery_depletion *= 0.95;
+    this->battery_depletion *= 0.9;
 }
 double SAREnv::getBatteryDepletion()
 {

@@ -14,7 +14,7 @@ from tsp2d_lib import Tsp2dLib
 def find_model_file(opt):
     max_n = int(opt['max_n'])
     min_n = int(opt['min_n'])
-    log_file = '%s/log-%d-%d.txt' % (opt['save_dir'], min_n, max_n)
+    log_file = '%s/log-%d-%d.txt' % (opt['load_dir'], min_n, max_n)
 
     best_r = 10000000
     best_it = -1
@@ -29,10 +29,10 @@ def find_model_file(opt):
                     best_it = it
     assert best_it >= 0
     print 'using iter=', best_it, 'with r=', best_r
-    return '%s/nrange_%d_%d_iter_%d.model' % (opt['save_dir'], min_n, max_n, best_it)
+    return '%s/nrange_%d_%d_iter_%d.model' % (opt['load_dir'], min_n, max_n, best_it)
 
 def PrepareTrainGraphs():
-    folder = '%s/train_tsp2d/tsp_min-n=%s_max-n=%s_num-graph=10000_type=%s' % (opt['data_root'], opt['test_min_n'], opt['test_max_n'], opt['g_type'])
+    folder = '%s/train_tsp2d/tsp_min-n=%s_max-n=%s_num-graph=10000_type=%s' % (opt['data_root'], opt['min_n'], opt['max_n'], opt['g_type'])
 
     with open('%s/paths.txt' % folder, 'r') as f:
         for line in f:
@@ -57,7 +57,7 @@ def PrepareTrainGraphs():
             yield g
 
 def PrepareValidGraphs():
-    folder = '%s/validation_tsp2d/tsp_min-n=%s_max-n=%s_num-graph=100_type=%s' % (opt['data_root'], opt['test_min_n'], opt['test_max_n'], opt['g_type'])
+    folder = '%s/validation_tsp2d/tsp_min-n=%s_max-n=%s_num-graph=100_type=%s' % (opt['data_root'], opt['min_n'], opt['max_n'], opt['g_type'])
 
     with open('%s/paths.txt' % folder, 'r') as f:
         for line in f:
@@ -108,17 +108,19 @@ if __name__ == '__main__':
             print "Problem"
         idx += 1
     for g in tqdm(PrepareValidGraphs()):
+        api.InsertGraph(g,is_test=True)
         val, sol = api.GetSol(idx,nx.number_of_nodes(g))
         prepared_valid_data.append((g,val))
         valid_opt_tours.append(sol[1:])
         if nx.number_of_nodes(g) != sol[0]:
             print "Problem"
         idx += 1
-    with open("prepared_train_data",'wb') as f:
+    with open("prepared_train_data.pkl",'wb') as f:
         pickle.dump(prepared_train_data,f)
-    with open("train_opt_tours",'wb') as f:
+    with open("train_opt_tours.pkl",'wb') as f:
         pickle.dump(train_opt_tours,f)
-    with open("prepared_valid_data",'wb') as f:
+    with open("prepared_valid_data.pkl",'wb') as f:
         pickle.dump(prepared_valid_data,f)
-    with open("valid_opt_tours",'wb') as f:
+    with open("valid_opt_tours.pkl",'wb') as f:
         pickle.dump(valid_opt_tours,f)
+

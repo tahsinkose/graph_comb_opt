@@ -80,6 +80,6 @@ double Fit(const double lr, std::vector< std::shared_ptr<Graph> >& g_list, std::
 
         loss += net->loss->AsScalar() * bsize;
     }
-    
+    std::cout<<"Loss: "<<loss/g_list.size()<<std::endl;
     return loss / g_list.size();
 }
