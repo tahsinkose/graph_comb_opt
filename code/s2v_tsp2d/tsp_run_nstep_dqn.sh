@@ -49,7 +49,7 @@ then
     mkdir -p $save_dir
 fi
 
-python main.py \
+python tsp_train.py \
     -net_type $net_type \
     -n_step $n_step \
     -data_root ../../data/tsp2d \

@@ -2,7 +2,7 @@
 
 g_type=clustered
 
-result_root=results/dqn-$g_type
+result_root=results/tsp_solvers
 
 test_min_n=15
 test_max_n=20
@@ -45,9 +45,9 @@ mem_size=50000
 max_iter=200000
 
 # folder to save the trained model
-save_dir=$result_root/ntype-$net_type-embed-$embed_dim-nbp-$max_bp_iter-rh-$reg_hidden
+save_dir=$result_root
 
-python evaluate.py \
+python tsp_evaluate.py \
     -net_type $net_type \
     -dev_id $dev_id \
     -n_step $n_step \

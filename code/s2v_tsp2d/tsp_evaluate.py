@@ -7,6 +7,7 @@ import os
 import sys
 import time
 from tqdm import tqdm
+import pickle
 
 sys.path.append( '%s/tsp2d_lib' % os.path.dirname(os.path.realpath(__file__)) )
 from tsp2d_lib import Tsp2dLib
@@ -32,7 +33,7 @@ def find_model_file(opt):
     return '%s/nrange_%d_%d_iter_%d.model' % (opt['save_dir'], min_n, max_n, best_it)
 
 def TestSet():
-    folder = '%s/test_tsp2d/tsp_min-n=%s_max-n=%s_num-graph=1000_type=%s' % (opt['data_root'], opt['test_min_n'], opt['test_max_n'], opt['g_type'])
+    folder = '%s/train_tsp2d/tsp_min-n=%s_max-n=%s_num-graph=10000_type=%s' % (opt['data_root'], opt['test_min_n'], opt['test_max_n'], opt['g_type'])
 
     with open('%s/paths.txt' % folder, 'r') as f:
         for line in f:
@@ -53,7 +54,7 @@ def TestSet():
             assert len(coors) == n_nodes
             g = nx.Graph()
             g.add_nodes_from(range(n_nodes))
-            nx.set_node_attributes(g, 'pos', coors)
+            nx.set_node_attributes(g,coors,'pos')
             yield g            
 
 if __name__ == '__main__':
@@ -78,18 +79,28 @@ if __name__ == '__main__':
         print 'testing'
         sys.stdout.flush()
         idx = 0
+        prepared_train_data = []
+        train_opt_tours = []
         for g in tqdm(TestSet()):
             api.InsertGraph(g, is_test=True)
             t1 = time.time()
             val, sol = api.GetSol(idx, nx.number_of_nodes(g))
+            prepared_train_data.append((g,val))
+            train_opt_tours.append(sol[1:])
             t2 = time.time()
             f_out.write('%.8f,' % val)
             f_out.write('%d' % sol[0])
+            #print "Num of nodes in graph: ",nx.number_of_nodes(g)," solution len: ",sol[0]
+            if nx.number_of_nodes(g) != sol[0]:
+                 print "Problem"
             for i in range(sol[0]):
                 f_out.write(' %d' % sol[i + 1])
             f_out.write(',%.6f\n' % (t2 - t1))
             frac += val
 
             idx += 1
-
+        with open("prepared_train_data.pkl",'wb') as f:
+            pickle.dump(prepared_train_data,f)
+        with open("train_opt_tours.pkl",'wb') as f:
+            pickle.dump(train_opt_tours,f)
     print 'average tour length: ', frac / n_test
