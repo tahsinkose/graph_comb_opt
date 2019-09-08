@@ -51,8 +51,7 @@ then
     mkdir -p $save_dir
 fi
 
-
-python sar_train.py \
+python sar_train_preprocess.py \
     -net_type $net_type \
     -n_step $n_step \
     -data_root ../../data/tsp2d \
@@ -75,5 +74,4 @@ python sar_train.py \
     -reg_hidden $reg_hidden \
     -momentum 0.9 \
     -l2 0.00 \
-    -w_scale $w_scale \
-    2>&1 | tee $save_dir/log-$min_n-${max_n}.txt
+    -w_scale $w_scale
