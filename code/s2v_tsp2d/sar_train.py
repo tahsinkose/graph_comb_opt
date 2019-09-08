@@ -7,7 +7,7 @@ import ctypes
 import os
 import sys
 from tqdm import tqdm
-
+import matplotlib.pyplot as plt
 sys.path.append( '%s/tsp2d_lib' % os.path.dirname(os.path.realpath(__file__)) )
 from tsp2d_lib import Tsp2dLib
 n_valid = 100
@@ -19,12 +19,12 @@ if __name__ == '__main__':
     for i in range(1, len(sys.argv), 2):
         opt[sys.argv[i][1:]] = sys.argv[i + 1]
 
-    with open("prepared_valid_data", 'rb') as f:
+    with open("prepared_valid_data.pkl", 'rb') as f:
    	 prepared_validation_data = pickle.load(f)
 
-    with open("prepared_train_data", 'rb') as f:
+    with open("prepared_train_data.pkl", 'rb') as f:
         prepared_train_data = pickle.load(f)
-    with open("train_opt_tours", 'rb') as f:
+    with open("train_opt_tours.pkl", 'rb') as f:
         train_opt_tours = pickle.load(f)
 
     for vd in prepared_validation_data:
@@ -65,4 +65,7 @@ if __name__ == '__main__':
             sar_api.TakeSnapshot()
             lr = lr * 0.95
 
-        sar_api.lib.Fit(ctypes.c_double(lr))
+        loss = sar_api.lib.Fit(ctypes.c_double(lr))
+        losses.append(loss)
+        plt.plot(losses)
+        plt.pause(0.05)
