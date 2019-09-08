@@ -65,6 +65,12 @@ Then use it with:
 
     docker run -it --user=0 -e DISPLAY=unix$DISPLAY --volume="/etc/group:/etc/group:ro" --volume="/etc/passwd:/etc/passwd:ro" --volume="/etc/shadow:/etc/shadow:ro" --volume="/etc/sudoers.d:/etc/sudoers.d:ro" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --runtime=nvidia <your_image>:<your_tag> bash
 
+If it fails to use X server:
+
+    $ sudo apt-get install x11-xserver-utils
+
+    $ xhost +
+
 # Reference
 
 Please cite our work if you find our code/paper is useful to your work. 
