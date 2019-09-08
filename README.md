@@ -10,8 +10,6 @@ Solution graphs on TSP instances.
 
 # 1. build
 
-**** Below shows an example of MVC. For all the problems, you can follow the similar pipeline ****
-
 Get the source code, and install all the dependencies. 
 
     git clone --recursive https://github.com/tahsinkose/graph_comb_opt
@@ -58,6 +56,14 @@ Here is the link to the dataset that was used in the paper:
 
 https://www.dropbox.com/sh/r39596h8e26nhsp/AADRm5mb82xn7h3BB4KXgETsa?dl=0
 
+# 3. Using Docker
+If you prefer using Docker, build the docker image by:
+
+ `docker build -t "<your_image>:<your_tag>" .` 
+
+Then use it with:
+
+    docker run -it --user=0 -e DISPLAY=unix$DISPLAY --volume="/etc/group:/etc/group:ro" --volume="/etc/passwd:/etc/passwd:ro" --volume="/etc/shadow:/etc/shadow:ro" --volume="/etc/sudoers.d:/etc/sudoers.d:ro" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --runtime=nvidia <your_image>:<your_tag> bash
 
 # Reference
 
